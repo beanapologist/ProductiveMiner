@@ -6,4 +6,3 @@ datasources:
     access: proxy
     url: http://adaptive-metrics:9090
     isDefault: true
-    editable: true
