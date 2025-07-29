@@ -1,0 +1,39 @@
+[node]
+name = "TestNet-Node"
+base_path = "./data/polkadot"
+
+[network]
+listen_addr = "/ip4/0.0.0.0/tcp/30333"
+public_addr = "/ip4/0.0.0.0/tcp/30333"
+
+[consensus]
+babe = true
+grandpa = true
+
+[telemetry]
+endpoints = []
+
+[log]
+level = "info"
+targets = ["substrate", "runtime"]
+
+[rpc]
+ws_external = true
+rpc_external = true
+rpc_cors = ["*"]
+rpc_methods = "unsafe"
+
+[prometheus]
+endpoint = "127.0.0.1:9615"
+
+[state]
+cache_size = 1000
+
+[import]
+max_concurrent_requests = 5
+
+[keystore]
+path = "./data/polkadot/keystore"
+
+[wasm]
+execution = "Compiled" 

@@ -1,0 +1,92 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        String   @id @default(cuid())
+  email     String   @unique
+  username  String   @unique
+  password  String
+  wallet    String   @unique
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  miningSessions MiningSession[]
+  discoveries    Discovery[]
+  blocks         Block[]
+}
+
+model Block {
+  id          String   @id @default(cuid())
+  hash        String   @unique
+  previousHash String?
+  timestamp   DateTime @default(now())
+  difficulty  Int
+  nonce       Int
+  merkleRoot  String
+  transactions Json[]
+  minerId     String
+  miner       User     @relation(fields: [minerId], references: [id])
+  height      Int      @unique
+  createdAt   DateTime @default(now())
+
+  @@index([timestamp])
+  @@index([difficulty])
+}
+
+model MiningSession {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id])
+  status    String   @default("active") // active, paused, completed
+  workType  String   // Prime Pattern, Riemann Zero, etc.
+  difficulty Int
+  startTime DateTime @default(now())
+  endTime   DateTime?
+  progress  Float    @default(0)
+  result    String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  discoveries Discovery[]
+
+  @@index([status])
+  @@index([workType])
+}
+
+model Discovery {
+  id              String   @id @default(cuid())
+  sessionId       String
+  session         MiningSession @relation(fields: [sessionId], references: [id])
+  userId          String
+  user            User     @relation(fields: [userId], references: [id])
+  workType        String
+  difficulty      Int
+  result          String
+  proofOfWork     String
+  quantumSecurity Int      @default(256)
+  timestamp       DateTime @default(now())
+  blockHash       String?
+  reward          Float    @default(0)
+  verified        Boolean  @default(false)
+
+  @@index([workType])
+  @@index([timestamp])
+  @@index([verified])
+}
+
+model SystemConfig {
+  id          String   @id @default(cuid())
+  key         String   @unique
+  value       String
+  description String?
+  updatedAt   DateTime @updatedAt
+} 

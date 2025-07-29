@@ -1,0 +1,7 @@
+[package]
+name = "hybrid-node"
+version = "0.1.0"
+edition = "2021"
+
+[dependencies]
+hybrid-runtime = { path = "../runtime" }

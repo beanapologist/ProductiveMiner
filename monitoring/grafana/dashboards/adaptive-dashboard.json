@@ -1,0 +1,54 @@
+{
+  "dashboard": {
+    "id": null,
+    "title": "Adaptive Learning Dashboard",
+    "tags": ["adaptive", "learning"],
+    "timezone": "browser",
+    "panels": [
+      {
+        "id": 1,
+        "title": "Block Creation Rate",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "rate(blocks_created_total[5m])",
+            "legendFormat": "Blocks/sec"
+          }
+        ]
+      },
+      {
+        "id": 2,
+        "title": "Algorithm Efficiency",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "algorithm_efficiency",
+            "legendFormat": "Efficiency"
+          }
+        ]
+      },
+      {
+        "id": 3,
+        "title": "Security Strength",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "security_strength",
+            "legendFormat": "Strength"
+          }
+        ]
+      },
+      {
+        "id": 4,
+        "title": "Frontend Performance",
+        "type": "graph",
+        "targets": [
+          {
+            "expr": "up{job=\"adaptive-frontend\"}",
+            "legendFormat": "Frontend Status"
+          }
+        ]
+      }
+    ]
+  }
+}

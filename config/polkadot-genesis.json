@@ -1,0 +1,55 @@
+{
+  "name": "TestNet-Hybrid",
+  "id": "testnet-hybrid",
+  "chainType": "Local",
+  "bootNodes": [],
+  "telemetryEndpoints": null,
+  "protocolId": null,
+  "properties": {
+    "ss58Format": 42,
+    "tokenDecimals": 10,
+    "tokenSymbol": "TEST",
+    "tokens": ["MINED", "RETH"]
+  },
+  "forkBlocks": [],
+  "badBlocks": [],
+  "consensusEngine": null,
+  "codeSubstitutes": {},
+  "genesis": {
+    "runtime": {
+      "system": {
+        "code": "0x"
+      },
+      "babe": {
+        "authorities": []
+      },
+      "grandpa": {
+        "authorities": []
+      },
+      "balances": {
+        "balances": [
+          ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", 1000000000000000000000],
+          ["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", 1000000000000000000000],
+          ["5FLSigC9HGRKVhB9FiEo4Y3koPsNmYmLyL2d3RkXWPehDwqN", 1000000000000000000000]
+        ]
+      },
+      "productiveMiner": {
+        "discoveries": [],
+        "miningSessions": [],
+        "stakes": [],
+        "validators": [],
+        "totalDiscoveries": 0,
+        "totalValidations": 0,
+        "totalPowRewards": 0,
+        "totalPosRewards": 0,
+        "maxDifficulty": 50,
+        "baseReward": 100,
+        "blockTime": 30,
+        "quantumSecurityLevel": 256,
+        "minStakeAmount": 100000000000000000000,
+        "powRewardMultiplier": 2,
+        "posRewardMultiplier": 1
+      }
+    }
+  }
+} 
