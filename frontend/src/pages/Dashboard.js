@@ -1,294 +1,249 @@
-import React, { useState, useEffect } from 'react';
-import {
-  Grid,
-  Card,
-  CardContent,
-  Typography,
-  Box,
-  LinearProgress,
-  Chip,
-  IconButton,
-  Tooltip,
-} from '@mui/material';
-import {
-  TrendingUp,
-  Memory,
-  Security,
-  Speed,
-  Psychology,
-  AutoGraph,
-  Refresh,
-} from '@mui/icons-material';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip as RechartsTooltip, ResponsiveContainer } from 'recharts';
+import React from 'react';
+import './Dashboard.css';
 
-const Dashboard = () => {
-  const [metrics, setMetrics] = useState({
-    totalBlocks: 0,
-    successfulBlocks: 0,
-    failedBlocks: 0,
-    algorithmEfficiency: 0,
-    securityStrength: 0,
-    consensusTime: 0,
-    learningRate: 0,
-    activeMiners: 0,
-    activeValidators: 0,
-    networkHashrate: 0,
-  });
-
-  const [chartData, setChartData] = useState([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    // Simulate real-time data updates
-    const interval = setInterval(() => {
-      setMetrics(prev => ({
-        totalBlocks: prev.totalBlocks + Math.floor(Math.random() * 3),
-        successfulBlocks: prev.successfulBlocks + Math.floor(Math.random() * 2),
-        failedBlocks: prev.failedBlocks + Math.floor(Math.random() * 1),
-        algorithmEfficiency: 1000 + Math.floor(Math.random() * 200),
-        securityStrength: 256 + Math.floor(Math.random() * 64),
-        consensusTime: 100 + Math.floor(Math.random() * 50),
-        learningRate: 500 + Math.floor(Math.random() * 300),
-        activeMiners: 5 + Math.floor(Math.random() * 3),
-        activeValidators: 3 + Math.floor(Math.random() * 2),
-        networkHashrate: 1000 + Math.floor(Math.random() * 500),
-      }));
-
-      setChartData(prev => [
-        ...prev,
-        {
-          time: new Date().toLocaleTimeString(),
-          efficiency: 1000 + Math.floor(Math.random() * 200),
-          security: 256 + Math.floor(Math.random() * 64),
-          learning: 500 + Math.floor(Math.random() * 300),
-        },
-      ].slice(-20)); // Keep last 20 data points
-    }, 3000);
-
-    setLoading(false);
-
-    return () => clearInterval(interval);
-  }, []);
-
-  const MetricCard = ({ title, value, icon, color, subtitle, progress }) => (
-    <Card className="hover-card" sx={{ height: '100%' }}>
-      <CardContent>
-        <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', mb: 2 }}>
-          <Typography variant="h6" color="text.secondary">
-            {title}
-          </Typography>
-          <IconButton size="small" sx={{ color }}>
-            {icon}
-          </IconButton>
-        </Box>
-        <Typography variant="h4" component="div" sx={{ color, mb: 1 }}>
-          {value}
-        </Typography>
-        {subtitle && (
-          <Typography variant="body2" color="text.secondary">
-            {subtitle}
-          </Typography>
-        )}
-        {progress && (
-          <LinearProgress
-            variant="determinate"
-            value={progress}
-            sx={{ mt: 1, height: 6, borderRadius: 3 }}
-          />
-        )}
-      </CardContent>
-    </Card>
-  );
-
-  if (loading) {
-    return (
-      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '50vh' }}>
-        <div className="loading-spinner" />
-      </Box>
-    );
-  }
+const Dashboard = ({ sharedData }) => {
+  const {
+    blockchainData,
+    miningState,
+    validatorsData,
+    discoveriesData,
+    systemHealth,
+    formatNumber,
+    formatBitStrength
+  } = sharedData;
 
   return (
-    <Box className="fade-in">
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', mb: 3 }}>
-        <Typography variant="h4" component="h1" className="gradient-text">
-          Adaptive Learning Dashboard
-        </Typography>
-        <Tooltip title="Refresh Data">
-          <IconButton color="primary">
-            <Refresh />
-          </IconButton>
-        </Tooltip>
-      </Box>
+    <div className="dashboard">
+      <div className="dashboard-header">
+        <h1>System Overview</h1>
+        <p>Real-time monitoring of the ProductiveMiner Adaptive Learning System</p>
+      </div>
 
-      <Grid container spacing={3}>
-        {/* Key Metrics */}
-        <Grid item xs={12} md={3}>
-          <MetricCard
-            title="Total Blocks"
-            value={metrics.totalBlocks}
-            icon={<TrendingUp />}
-            color="#4caf50"
-            subtitle="Blocks created"
-            progress={(metrics.successfulBlocks / Math.max(metrics.totalBlocks, 1)) * 100}
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <MetricCard
-            title="Algorithm Efficiency"
-            value={metrics.algorithmEfficiency}
-            icon={<Memory />}
-            color="#2196f3"
-            subtitle="Computational efficiency score"
-            progress={(metrics.algorithmEfficiency / 1200) * 100}
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <MetricCard
-            title="Security Strength"
-            value={metrics.securityStrength}
-            icon={<Security />}
-            color="#ff9800"
-            subtitle="Cryptographic security level"
-            progress={(metrics.securityStrength / 320) * 100}
-          />
-        </Grid>
-        <Grid item xs={12} md={3}>
-          <MetricCard
-            title="Learning Rate"
-            value={metrics.learningRate}
-            icon={<Psychology />}
-            color="#9c27b0"
-            subtitle="Adaptive learning speed"
-            progress={(metrics.learningRate / 800) * 100}
-          />
-        </Grid>
+      {/* System Health Cards */}
+      <div className="metrics-grid">
+        <div className="metric-card">
+          <div className="metric-icon">⚡</div>
+          <div className="metric-content">
+            <h3>System Health</h3>
+            <div className="metric-value">
+              <span className={`status-badge ${systemHealth.status}`}>
+                {systemHealth.status}
+              </span>
+            </div>
+            <div className="metric-details">
+              <span>Uptime: {Math.floor(systemHealth.uptime / 3600)}h</span>
+              <span>Connections: {systemHealth.activeConnections}</span>
+            </div>
+          </div>
+        </div>
 
-        {/* Network Status */}
-        <Grid item xs={12} md={6}>
-          <Card className="hover-card">
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Network Status
-              </Typography>
-              <Box sx={{ display: 'flex', flexWrap: 'wrap', gap: 1, mb: 2 }}>
-                <Chip label={`${metrics.activeMiners} Active Miners`} color="primary" />
-                <Chip label={`${metrics.activeValidators} Validators`} color="secondary" />
-                <Chip label={`${metrics.networkHashrate} H/s`} color="success" />
-              </Box>
-              <Typography variant="body2" color="text.secondary">
-                Consensus Time: {metrics.consensusTime}ms
-              </Typography>
-            </CardContent>
-          </Card>
-        </Grid>
+        <div className="metric-card">
+          <div className="metric-icon">🔗</div>
+          <div className="metric-content">
+            <h3>Blockchain</h3>
+            <div className="metric-value">{formatNumber(blockchainData.height)}</div>
+            <div className="metric-details">
+              <span>Total Blocks: {formatNumber(blockchainData.totalBlocks)}</span>
+              <span>Avg Block Time: {blockchainData.avgBlockTime}s</span>
+            </div>
+          </div>
+        </div>
 
-        {/* Success Rate */}
-        <Grid item xs={12} md={6}>
-          <Card className="hover-card">
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Success Rate
-              </Typography>
-              <Box sx={{ display: 'flex', alignItems: 'center', mb: 2 }}>
-                <Typography variant="h4" color="success.main" sx={{ mr: 2 }}>
-                  {Math.round((metrics.successfulBlocks / Math.max(metrics.totalBlocks, 1)) * 100)}%
-                </Typography>
-                <Typography variant="body2" color="text.secondary">
-                  {metrics.successfulBlocks} successful / {metrics.totalBlocks} total
-                </Typography>
-              </Box>
-              <LinearProgress
-                variant="determinate"
-                value={(metrics.successfulBlocks / Math.max(metrics.totalBlocks, 1)) * 100}
-                color="success"
-                sx={{ height: 8, borderRadius: 4 }}
-              />
-            </CardContent>
-          </Card>
-        </Grid>
+        <div className="metric-card">
+          <div className="metric-icon">⛏️</div>
+          <div className="metric-content">
+            <h3>Mining</h3>
+            <div className="metric-value">{miningState.activeSessions.length}</div>
+            <div className="metric-details">
+              <span>Active Sessions</span>
+              <span>Difficulty: {miningState.difficulty}</span>
+            </div>
+          </div>
+        </div>
 
-        {/* Real-time Chart */}
-        <Grid item xs={12}>
-          <Card className="hover-card">
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Real-time Adaptive Learning Metrics
-              </Typography>
-              <ResponsiveContainer width="100%" height={300}>
-                <LineChart data={chartData}>
-                  <CartesianGrid strokeDasharray="3 3" />
-                  <XAxis dataKey="time" />
-                  <YAxis />
-                  <RechartsTooltip />
-                  <Line
-                    type="monotone"
-                    dataKey="efficiency"
-                    stroke="#2196f3"
-                    strokeWidth={2}
-                    name="Algorithm Efficiency"
+        <div className="metric-card">
+          <div className="metric-icon">🏛️</div>
+          <div className="metric-content">
+            <h3>Validators</h3>
+            <div className="metric-value">{validatorsData.activeValidators}</div>
+            <div className="metric-details">
+              <span>Active Validators</span>
+              <span>Consensus: {validatorsData.consensusRate}%</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">🔬</div>
+          <div className="metric-content">
+            <h3>Discoveries</h3>
+            <div className="metric-value">{discoveriesData.totalDiscoveries}</div>
+            <div className="metric-details">
+              <span>Total Discoveries</span>
+              <span>Pending: {discoveriesData.pendingValidation}</span>
+            </div>
+          </div>
+        </div>
+
+        <div className="metric-card">
+          <div className="metric-icon">💰</div>
+          <div className="metric-content">
+            <h3>Rewards</h3>
+            <div className="metric-value">{formatNumber(blockchainData.totalRewards)}</div>
+            <div className="metric-details">
+              <span>Total Rewards</span>
+              <span>Transactions: {formatNumber(blockchainData.totalTransactions)}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mining Control Section */}
+      <div className="dashboard-section">
+        <h2>Mining Control</h2>
+        <div className="mining-control">
+          <div className="work-types">
+            <h3>Available Work Types</h3>
+            <div className="work-types-grid">
+              {miningState.workTypes.map((workType, index) => (
+                <div key={index} className="work-type-card">
+                  <div className="work-type-icon">{workType.icon}</div>
+                  <div className="work-type-info">
+                    <h4>{workType.name}</h4>
+                    <p>{workType.description}</p>
+                    <span className="difficulty-badge">
+                      Difficulty: {workType.difficulty}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <div className="mining-session">
+            <h3>Start Mining Session</h3>
+            <div className="session-form">
+              <div className="form-group">
+                <label>Work Type</label>
+                <select className="form-select">
+                  <option>Select a work type...</option>
+                  {miningState.workTypes.map((workType, index) => (
+                    <option key={index} value={workType.name}>
+                      {workType.name}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="form-group">
+                <label>Difficulty Level</label>
+                <div className="difficulty-slider">
+                  <input 
+                    type="range" 
+                    min="1" 
+                    max="100" 
+                    value={miningState.difficulty}
+                    className="slider"
                   />
-                  <Line
-                    type="monotone"
-                    dataKey="security"
-                    stroke="#ff9800"
-                    strokeWidth={2}
-                    name="Security Strength"
-                  />
-                  <Line
-                    type="monotone"
-                    dataKey="learning"
-                    stroke="#9c27b0"
-                    strokeWidth={2}
-                    name="Learning Rate"
-                  />
-                </LineChart>
-              </ResponsiveContainer>
-            </CardContent>
-          </Card>
-        </Grid>
+                  <span className="difficulty-value">{miningState.difficulty}</span>
+                </div>
+              </div>
 
-        {/* Adaptive Learning Status */}
-        <Grid item xs={12}>
-          <Card className="hover-card">
-            <CardContent>
-              <Typography variant="h6" gutterBottom>
-                Adaptive Learning Status
-              </Typography>
-              <Grid container spacing={2}>
-                <Grid item xs={12} md={4}>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <AutoGraph sx={{ fontSize: 40, color: 'primary.main', mb: 1 }} />
-                    <Typography variant="h6">Algorithm Learning</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Continuously optimizing computational efficiency
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Security sx={{ fontSize: 40, color: 'warning.main', mb: 1 }} />
-                    <Typography variant="h6">Security Adaptation</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Dynamically adjusting cryptographic parameters
-                    </Typography>
-                  </Box>
-                </Grid>
-                <Grid item xs={12} md={4}>
-                  <Box sx={{ textAlign: 'center' }}>
-                    <Speed sx={{ fontSize: 40, color: 'success.main', mb: 1 }} />
-                    <Typography variant="h6">Consensus Optimization</Typography>
-                    <Typography variant="body2" color="text.secondary">
-                      Optimizing PoW/PoS hybrid consensus
-                    </Typography>
-                  </Box>
-                </Grid>
-              </Grid>
-            </CardContent>
-          </Card>
-        </Grid>
-      </Grid>
-    </Box>
+              <button className="start-mining-btn">
+                🚀 Start Mining Session
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      {/* Mining Process Phases */}
+      <div className="dashboard-section">
+        <h2>Mining Process Phases</h2>
+        <div className="phases-grid">
+          <div className="phase-card">
+            <div className="phase-icon">⛏️</div>
+            <h4>Mining Phase</h4>
+            <p>Computational work execution with quantum-secured algorithms</p>
+          </div>
+
+          <div className="phase-card">
+            <div className="phase-icon">✅</div>
+            <h4>Validation Phase</h4>
+            <p>Proof of Stake consensus and mathematical verification</p>
+          </div>
+
+          <div className="phase-card">
+            <div className="phase-icon">🔍</div>
+            <h4>Discovery Phase</h4>
+            <p>Pattern recognition and mathematical breakthroughs</p>
+          </div>
+
+          <div className="phase-card">
+            <div className="phase-icon">🔄</div>
+            <h4>Adaptation Phase</h4>
+            <p>Dynamic difficulty adjustment and learning cycles</p>
+          </div>
+
+          <div className="phase-card">
+            <div className="phase-icon">⚡</div>
+            <h4>Optimization Phase</h4>
+            <p>Performance tuning and efficiency improvements</p>
+          </div>
+
+          <div className="phase-card">
+            <div className="phase-icon">🔒</div>
+            <h4>Security Phase</h4>
+            <p>Quantum-resistant cryptography and threat detection</p>
+          </div>
+        </div>
+      </div>
+
+      {/* Mathematical Mining Capabilities */}
+      <div className="dashboard-section">
+        <h2>Mathematical Mining Capabilities</h2>
+        <div className="capabilities-grid">
+          <div className="capability-card">
+            <h3>Unlimited Bit Strength</h3>
+            <p>Our productive miner replaces arbitrary SHA-256 hashing with real mathematical computations, enabling unlimited bit strength through continuous mathematical work.</p>
+            <div className="capability-metrics">
+              <div className="metric">
+                <span>Current Bit Strength:</span>
+                <span className="value">{formatBitStrength(256)}</span>
+              </div>
+              <div className="metric">
+                <span>Max Bit Strength:</span>
+                <span className="value">∞ (Unlimited)</span>
+              </div>
+            </div>
+          </div>
+
+          <div className="capability-card">
+            <h3>Hybrid PoW/PoS</h3>
+            <p>Combines Proof of Work (mathematical computations) with Proof of Stake (validator consensus) for enhanced security and efficiency.</p>
+            <div className="capability-features">
+              <span className="feature">⛏️ Mathematical PoW</span>
+              <span className="feature">🔒 Stake-based PoS</span>
+            </div>
+          </div>
+
+          <div className="capability-card">
+            <h3>Adaptive Algorithms</h3>
+            <p>Dynamic difficulty adjustment and learning algorithms that improve efficiency and security over time through mathematical discoveries.</p>
+            <div className="capability-metrics">
+              <div className="metric">
+                <span>Learning Cycles:</span>
+                <span className="value">0</span>
+              </div>
+              <div className="metric">
+                <span>Mathematical Efficiency:</span>
+                <span className="value">85%</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
   );
 };
 

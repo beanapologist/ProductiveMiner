@@ -1,188 +1,115 @@
 import React, { useState } from 'react';
-import {
-  Box,
-  Drawer,
-  AppBar,
-  Toolbar,
-  List,
-  Typography,
-  Divider,
-  IconButton,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
-  Badge,
-  Chip,
-} from '@mui/material';
-import {
-  Menu as MenuIcon,
-  Dashboard as DashboardIcon,
-  AccountTree as BlockIcon,
-  Build as MiningIcon,
-  VerifiedUser as ValidatorIcon,
-  Analytics as AnalyticsIcon,
-  Settings as SettingsIcon,
-  Circle as StatusIcon,
-} from '@mui/icons-material';
-import { useNavigate, useLocation } from 'react-router-dom';
+import { Link, useLocation } from 'react-router-dom';
+import './Layout.css';
 
-const drawerWidth = 240;
-
-const menuItems = [
-  { text: 'Dashboard', icon: <DashboardIcon />, path: '/' },
-  { text: 'Block Explorer', icon: <BlockIcon />, path: '/blocks' },
-  { text: 'Mining Control', icon: <MiningIcon />, path: '/mining' },
-  { text: 'Validator Panel', icon: <ValidatorIcon />, path: '/validators' },
-  { text: 'Analytics', icon: <AnalyticsIcon />, path: '/analytics' },
-  { text: 'Settings', icon: <SettingsIcon />, path: '/settings' },
-];
-
-function Layout({ children }) {
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const navigate = useNavigate();
+const Layout = ({ children, sharedData }) => {
+  const [sidebarOpen, setSidebarOpen] = useState(false);
   const location = useLocation();
 
-  const handleDrawerToggle = () => {
-    setMobileOpen(!mobileOpen);
-  };
+  const navigationItems = [
+    { path: '/', label: 'Dashboard', icon: '📊' },
+    { path: '/blocks', label: 'Block Explorer', icon: '🔍' },
+    { path: '/mining', label: 'Mining Control', icon: '⛏️' },
+    { path: '/validators', label: 'Validators', icon: '🏛️' },
+    { path: '/analytics', label: 'Analytics', icon: '📈' },
+    { path: '/discoveries', label: 'Discoveries', icon: '🔬' },
+    { path: '/comprehensive-analytics', label: 'Comprehensive Analytics', icon: '🧠' },
+    { path: '/settings', label: 'Settings', icon: '⚙️' }
+  ];
 
-  const handleNavigation = (path) => {
-    navigate(path);
-    setMobileOpen(false);
-  };
-
-  const drawer = (
-    <Box>
-      <Toolbar>
-        <Typography variant="h6" noWrap component="div" sx={{ color: 'primary.main' }}>
-          🧠 Adaptive Miner
-        </Typography>
-      </Toolbar>
-      <Divider />
-      <List>
-        {menuItems.map((item) => (
-          <ListItem key={item.text} disablePadding>
-            <ListItemButton
-              selected={location.pathname === item.path}
-              onClick={() => handleNavigation(item.path)}
-              sx={{
-                '&.Mui-selected': {
-                  backgroundColor: 'primary.main',
-                  '&:hover': {
-                    backgroundColor: 'primary.dark',
-                  },
-                },
-              }}
-            >
-              <ListItemIcon sx={{ color: location.pathname === item.path ? 'white' : 'inherit' }}>
-                {item.icon}
-              </ListItemIcon>
-              <ListItemText primary={item.text} />
-            </ListItemButton>
-          </ListItem>
-        ))}
-      </List>
-      <Divider />
-      <Box sx={{ p: 2 }}>
-        <Chip
-          icon={<StatusIcon className="status-online" />}
-          label="System Online"
-          color="success"
-          variant="outlined"
-          sx={{ width: '100%' }}
-        />
-      </Box>
-    </Box>
-  );
+  const isActive = (path) => location.pathname === path;
 
   return (
-    <Box sx={{ display: 'flex' }}>
-      <AppBar
-        position="fixed"
-        sx={{
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          ml: { sm: `${drawerWidth}px` },
-          background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
-          borderBottom: '1px solid rgba(255, 255, 255, 0.1)',
-        }}
-      >
-        <Toolbar>
-          <IconButton
-            color="inherit"
-            aria-label="open drawer"
-            edge="start"
-            onClick={handleDrawerToggle}
-            sx={{ mr: 2, display: { sm: 'none' } }}
-          >
-            <MenuIcon />
-          </IconButton>
-          <Typography variant="h6" noWrap component="div" sx={{ flexGrow: 1 }}>
-            ProductiveMiner Adaptive Learning System
-          </Typography>
-          <Badge badgeContent={4} color="error">
-            <Chip
-              label="Live Updates"
-              color="primary"
-              size="small"
-              className="pulse"
-            />
-          </Badge>
-        </Toolbar>
-      </AppBar>
-      <Box
-        component="nav"
-        sx={{ width: { sm: drawerWidth }, flexShrink: { sm: 0 } }}
-        aria-label="mailbox folders"
-      >
-        <Drawer
-          variant="temporary"
-          open={mobileOpen}
-          onClose={handleDrawerToggle}
-          ModalProps={{
-            keepMounted: true,
-          }}
-          sx={{
-            display: { xs: 'block', sm: 'none' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-              background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
-              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
-            },
-          }}
-        >
-          {drawer}
-        </Drawer>
-        <Drawer
-          variant="permanent"
-          sx={{
-            display: { xs: 'none', sm: 'block' },
-            '& .MuiDrawer-paper': {
-              boxSizing: 'border-box',
-              width: drawerWidth,
-              background: 'linear-gradient(135deg, #1a1a1a 0%, #2a2a2a 100%)',
-              borderRight: '1px solid rgba(255, 255, 255, 0.1)',
-            },
-          }}
-          open
-        >
-          {drawer}
-        </Drawer>
-      </Box>
-      <Box
-        component="main"
-        sx={{
-          flexGrow: 1,
-          p: 3,
-          width: { sm: `calc(100% - ${drawerWidth}px)` },
-          mt: '64px',
-        }}
-      >
-        {children}
-      </Box>
-    </Box>
+    <div className="layout">
+      {/* Header */}
+      <header className="header">
+        <div className="header-content">
+          <div className="header-left">
+            <button 
+              className="sidebar-toggle"
+              onClick={() => setSidebarOpen(!sidebarOpen)}
+            >
+              ☰
+            </button>
+            <div className="logo">
+              <h1>ProductiveMiner</h1>
+              <span className="subtitle">Quantum-Secured Blockchain Mining</span>
+            </div>
+          </div>
+          
+          <div className="header-right">
+            <div className="connection-status">
+              <span className={`status-indicator ${sharedData.isConnected ? 'connected' : 'disconnected'}`}>
+                {sharedData.isConnected ? '🟢' : '🔴'}
+              </span>
+              <span className="status-text">
+                {sharedData.isConnected ? 'Connected' : 'Disconnected'}
+              </span>
+            </div>
+            
+            <div className="system-info">
+              <span className="testnet-badge">Testnet Mode</span>
+              <span className="block-height">
+                Block: {sharedData.blockchainData.height}
+              </span>
+            </div>
+          </div>
+        </div>
+      </header>
+
+      {/* Sidebar */}
+      <aside className={`sidebar ${sidebarOpen ? 'open' : ''}`}>
+        <nav className="sidebar-nav">
+          {navigationItems.map((item) => (
+            <Link
+              key={item.path}
+              to={item.path}
+              className={`nav-item ${isActive(item.path) ? 'active' : ''}`}
+              onClick={() => setSidebarOpen(false)}
+            >
+              <span className="nav-icon">{item.icon}</span>
+              <span className="nav-label">{item.label}</span>
+            </Link>
+          ))}
+        </nav>
+
+        <div className="sidebar-footer">
+          <div className="system-health">
+            <h4>System Health</h4>
+            <div className="health-item">
+              <span>Status:</span>
+              <span className={`health-status ${sharedData.systemHealth.status}`}>
+                {sharedData.systemHealth.status}
+              </span>
+            </div>
+            <div className="health-item">
+              <span>Uptime:</span>
+              <span>{Math.floor(sharedData.systemHealth.uptime / 3600)}h</span>
+            </div>
+            <div className="health-item">
+              <span>Connections:</span>
+              <span>{sharedData.systemHealth.activeConnections}</span>
+            </div>
+          </div>
+        </div>
+      </aside>
+
+      {/* Main Content */}
+      <main className="main-content">
+        <div className="content-wrapper">
+          {children}
+        </div>
+      </main>
+
+      {/* Mobile Overlay */}
+      {sidebarOpen && (
+        <div 
+          className="mobile-overlay"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+    </div>
   );
-}
+};
 
 export default Layout; 
