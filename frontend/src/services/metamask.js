@@ -19,7 +19,7 @@ class MetaMaskService {
         decimals: 18
       },
       rpcUrls: ['http://localhost:8545'],
-      blockExplorerUrls: ['http://localhost:3001/explorer']
+      blockExplorerUrls: ['http://localhost:3000/explorer']
     };
 
     // MINED Token configuration
@@ -460,6 +460,8 @@ class MetaMaskService {
     if (balance === null || balance === undefined) return '0';
     return parseFloat(balance).toFixed(decimals);
   }
+
+
 }
 
 // Create singleton instance

@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import './Wallet.css';
 import metamaskService from '../services/metamask';
+import { MINED_TOKEN_ADDRESS } from '../config/contracts';
 
 const Wallet = ({ sharedData }) => {
   const { apiService, formatNumber, formatCurrency } = sharedData;
@@ -107,6 +108,8 @@ const Wallet = ({ sharedData }) => {
     isConnecting: false,
     error: null
   });
+
+
 
   // MetaMask event listeners
   useEffect(() => {
@@ -270,14 +273,31 @@ const Wallet = ({ sharedData }) => {
 
   const addMinedTokenToMetaMask = async () => {
     try {
+      console.log('🦊 Add MINED Token button clicked!');
+      
+      // Check if MetaMask is connected
+      if (!metamaskState.isConnected) {
+        alert('❌ Please connect MetaMask first!');
+        return;
+      }
+      
+      // Check if we're on the correct network
+      if (metamaskState.currentNetwork !== '0x539') {
+        alert('❌ Please switch to TestNet network first!');
+        return;
+      }
+      
       const result = await metamaskService.addMinedTokenToMetaMask();
       if (result.success) {
         console.log('✅ MINED token added to MetaMask');
+        alert('✅ MINED token added to MetaMask successfully!');
       } else {
         console.error('❌ Failed to add MINED token:', result.error);
+        alert('❌ Failed to add MINED token: ' + result.error);
       }
     } catch (error) {
       console.error('Error adding MINED token to MetaMask:', error);
+      alert('❌ Error adding MINED token: ' + error.message);
     }
   };
 
@@ -345,6 +365,7 @@ const Wallet = ({ sharedData }) => {
             ) : (
               <div className="metamask-connected">
                 <div className="wallet-info">
+                  {/* Account Info */}
                   <div className="account-info">
                     <div className="account-address">
                       <span className="label">Account:</span>
@@ -357,6 +378,8 @@ const Wallet = ({ sharedData }) => {
                         📋
                       </button>
                     </div>
+                    
+                    {/* Network Info */}
                     <div className="network-info">
                       <span className="label">Network:</span>
                       <span className={`network ${metamaskState.currentNetwork === '0x539' ? 'correct' : 'wrong'}`}>
@@ -371,26 +394,153 @@ const Wallet = ({ sharedData }) => {
                         </button>
                       )}
                     </div>
+                    
+                    {/* ETH Balance */}
                     <div className="balance-info">
                       <span className="label">ETH Balance:</span>
                       <span className="balance">
                         {metamaskService.formatBalance(metamaskState.balance)} ETH
                       </span>
                     </div>
-                    <div className="mined-token-info">
-                      <span className="label">MINED Token:</span>
-                      <span className="balance">
-                        {metamaskService.formatBalance(metamaskState.minedTokenBalance)} MINED
-                      </span>
-                      <button 
-                        className="btn btn-sm btn-primary"
-                        onClick={addMinedTokenToMetaMask}
-                        title="Add MINED token to MetaMask"
-                      >
-                        ➕ Add Token
-                      </button>
+                  </div>
+                  
+                  {/* MINED Token Section - ENHANCED */}
+                  <div className="mined-token-section">
+                    <div className="mined-token-header">
+                      <h3>💰 MINED Token</h3>
+                      <p className="token-description">
+                        ProductiveMiner Token (MINED) - The native token of the TestNet
+                      </p>
+                    </div>
+                    
+                    <div className="mined-token-content">
+                      <div className="mined-balance">
+                        <span className="label">Your Balance:</span>
+                        <span className="balance">
+                          {metamaskService.formatBalance(metamaskState.minedTokenBalance)} MINED
+                        </span>
+                      </div>
+                      
+                      {/* Token Information Card */}
+                      <div className="token-info-card">
+                        <h4>📋 MINED Token Details</h4>
+                        <div className="token-details">
+                          <div className="detail-row">
+                            <span className="detail-label">Token Name:</span>
+                            <span className="detail-value">ProductiveMiner Token</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="detail-label">Symbol:</span>
+                            <span className="detail-value">MINED</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="detail-label">Decimals:</span>
+                            <span className="detail-value">18</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="detail-label">Contract Address:</span>
+                            <span className="detail-value address">
+                              {MINED_TOKEN_ADDRESS}
+                              <button 
+                                className="btn btn-sm btn-secondary"
+                                onClick={() => navigator.clipboard.writeText(MINED_TOKEN_ADDRESS)}
+                                title="Copy contract address"
+                              >
+                                📋
+                              </button>
+                            </span>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Add to MetaMask Instructions */}
+                      <div className="add-token-instructions">
+                        <h4>🦊 Add MINED to MetaMask</h4>
+                        <div className="instructions-steps">
+                          <div className="step">
+                            <span className="step-number">1</span>
+                            <span className="step-text">Click the "Add MINED to MetaMask" button below</span>
+                          </div>
+                          <div className="step">
+                            <span className="step-number">2</span>
+                            <span className="step-text">MetaMask will open a popup asking to add the token</span>
+                          </div>
+                          <div className="step">
+                            <span className="step-number">3</span>
+                            <span className="step-text">Click "Add Token" to confirm</span>
+                          </div>
+                          <div className="step">
+                            <span className="step-number">4</span>
+                            <span className="step-text">MINED tokens will appear in your MetaMask wallet</span>
+                          </div>
+                        </div>
+                        
+                        <div className="add-token-actions">
+                          <button 
+                            className="btn btn-primary add-token-btn"
+                            onClick={addMinedTokenToMetaMask}
+                            style={{
+                              background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+                              color: 'white',
+                              border: 'none',
+                              padding: '12px 24px',
+                              borderRadius: '8px',
+                              cursor: 'pointer',
+                              fontSize: '16px',
+                              fontWeight: 'bold',
+                              boxShadow: '0 4px 15px rgba(102, 126, 234, 0.4)',
+                              transition: 'all 0.3s ease'
+                            }}
+                            onMouseOver={(e) => {
+                              e.target.style.transform = 'translateY(-2px)';
+                              e.target.style.boxShadow = '0 6px 20px rgba(102, 126, 234, 0.6)';
+                            }}
+                            onMouseOut={(e) => {
+                              e.target.style.transform = 'translateY(0)';
+                              e.target.style.boxShadow = '0 4px 15px rgba(102, 126, 234, 0.4)';
+                            }}
+                          >
+                            ➕ Add MINED to MetaMask
+                          </button>
+                          
+                          <div className="manual-add-info">
+                            <p><strong>Manual Addition:</strong> If the button doesn't work, you can manually add the token:</p>
+                            <ol>
+                              <li>Open MetaMask</li>
+                              <li>Click "Import tokens"</li>
+                              <li>Paste the contract address: <code>{MINED_TOKEN_ADDRESS}</code></li>
+                              <li>Click "Add Custom Token"</li>
+                            </ol>
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Network Information */}
+                      <div className="network-info-card">
+                        <h4>🌐 Network Information</h4>
+                        <div className="network-details">
+                          <div className="detail-row">
+                            <span className="detail-label">Network Name:</span>
+                            <span className="detail-value">ProductiveMiner TestNet</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="detail-label">Chain ID:</span>
+                            <span className="detail-value">1337 (0x539)</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="detail-label">RPC URL:</span>
+                            <span className="detail-value">http://localhost:8545</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="detail-label">Block Explorer:</span>
+                            <span className="detail-value">http://localhost:3001/explorer</span>
+                          </div>
+                        </div>
+                      </div>
                     </div>
                   </div>
+                  
+                  {/* Wallet Actions */}
                   <div className="wallet-actions">
                     <button 
                       className="btn btn-secondary"
@@ -457,6 +607,125 @@ const Wallet = ({ sharedData }) => {
               <span className="negative">{formatCurrency(walletData.totalFees)}</span>
             </div>
           </div>
+        </div>
+      </div>
+
+      {/* MINED Token Section - PROMINENT */}
+      <div className="mined-token-prominent" style={{
+        background: 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
+        color: 'white',
+        padding: '30px',
+        margin: '30px 0',
+        borderRadius: '15px',
+        boxShadow: '0 10px 30px rgba(102, 126, 234, 0.3)',
+        border: '2px solid #4c63d2'
+      }}>
+        <div style={{ textAlign: 'center', marginBottom: '25px' }}>
+          <h2 style={{ margin: '0 0 10px 0', fontSize: '2rem', fontWeight: 'bold' }}>
+            💰 MINED Token
+          </h2>
+          <p style={{ margin: '0', fontSize: '1.1rem', opacity: '0.9' }}>
+            Add MINED tokens to your MetaMask wallet
+          </p>
+        </div>
+        
+        <div style={{ 
+          display: 'grid', 
+          gridTemplateColumns: 'repeat(auto-fit, minmax(250px, 1fr))', 
+          gap: '20px',
+          marginBottom: '25px'
+        }}>
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '20px', borderRadius: '10px' }}>
+            <h4 style={{ margin: '0 0 15px 0', fontSize: '1.2rem' }}>📋 Token Details</h4>
+            <div style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+              <div><strong>Name:</strong> ProductiveMiner Token</div>
+              <div><strong>Symbol:</strong> MINED</div>
+              <div><strong>Decimals:</strong> 18</div>
+              <div><strong>Contract:</strong> {MINED_TOKEN_ADDRESS}</div>
+            </div>
+          </div>
+          
+          <div style={{ background: 'rgba(255,255,255,0.1)', padding: '20px', borderRadius: '10px' }}>
+            <h4 style={{ margin: '0 0 15px 0', fontSize: '1.2rem' }}>🌐 Network Info</h4>
+            <div style={{ fontSize: '0.9rem', lineHeight: '1.6' }}>
+              <div><strong>Network:</strong> ProductiveMiner TestNet</div>
+              <div><strong>Chain ID:</strong> 1337 (0x539)</div>
+              <div><strong>RPC URL:</strong> http://localhost:8545</div>
+              <div><strong>Explorer:</strong> http://localhost:3000/explorer</div>
+            </div>
+          </div>
+        </div>
+        
+        <div style={{ textAlign: 'center' }}>
+          <button 
+            onClick={addMinedTokenToMetaMask}
+            style={{
+              background: 'linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%)',
+              color: 'white',
+              border: 'none',
+              padding: '15px 30px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontSize: '1.1rem',
+              fontWeight: 'bold',
+              boxShadow: '0 5px 15px rgba(255, 107, 107, 0.4)',
+              transition: 'all 0.3s ease',
+              marginRight: '15px'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.transform = 'translateY(-3px)';
+              e.target.style.boxShadow = '0 8px 25px rgba(255, 107, 107, 0.6)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.transform = 'translateY(0)';
+              e.target.style.boxShadow = '0 5px 15px rgba(255, 107, 107, 0.4)';
+            }}
+          >
+            ➕ Add MINED to MetaMask
+          </button>
+          
+          <button 
+            onClick={() => {
+              navigator.clipboard.writeText(MINED_TOKEN_ADDRESS);
+              alert('Contract address copied to clipboard!');
+            }}
+            style={{
+              background: 'rgba(255,255,255,0.2)',
+              color: 'white',
+              border: '2px solid rgba(255,255,255,0.3)',
+              padding: '15px 30px',
+              borderRadius: '10px',
+              cursor: 'pointer',
+              fontSize: '1rem',
+              fontWeight: 'bold',
+              transition: 'all 0.3s ease'
+            }}
+            onMouseOver={(e) => {
+              e.target.style.background = 'rgba(255,255,255,0.3)';
+            }}
+            onMouseOut={(e) => {
+              e.target.style.background = 'rgba(255,255,255,0.2)';
+            }}
+          >
+            📋 Copy Contract Address
+          </button>
+        </div>
+        
+        <div style={{ 
+          background: 'rgba(255,255,255,0.1)', 
+          padding: '20px', 
+          borderRadius: '10px',
+          marginTop: '20px',
+          fontSize: '0.9rem'
+        }}>
+          <h4 style={{ margin: '0 0 10px 0', fontSize: '1.1rem' }}>📝 Manual Instructions</h4>
+          <ol style={{ margin: '0', paddingLeft: '20px', lineHeight: '1.6' }}>
+            <li>Open MetaMask wallet</li>
+            <li>Click "Import tokens"</li>
+            <li>Paste the contract address: <code style={{ background: 'rgba(255,255,255,0.2)', padding: '2px 6px', borderRadius: '4px' }}>{MINED_TOKEN_ADDRESS}</code></li>
+            <li>Click "Add Custom Token"</li>
+            <li>Verify token details and click "Import Tokens"</li>
+          </ol>
         </div>
       </div>
 

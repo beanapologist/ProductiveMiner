@@ -228,6 +228,7 @@ function App() {
   return (
     <Router>
       <div className="App">
+        
         <Layout sharedData={sharedData}>
           <Routes>
             <Route path="/" element={<Dashboard sharedData={sharedData} />} />
