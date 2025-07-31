@@ -1,0 +1,11 @@
+{
+  "chainId": "0x539",
+  "chainName": "ProductiveMiner TestNet",
+  "nativeCurrency": {
+    "name": "MINED",
+    "symbol": "MINED",
+    "decimals": 18
+  },
+  "rpcUrls": ["http://localhost:8545"],
+  "blockExplorerUrls": ["http://localhost:3001/explorer"]
+} 

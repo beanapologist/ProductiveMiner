@@ -1,17 +1,39 @@
-# ProductiveMiner Adaptive Learning System - Frontend
+# ProductiveMiner $MINED Token Exchange - Frontend
 
-A modern React-based frontend for the ProductiveMiner Adaptive Learning System, featuring real-time monitoring, block exploration, mining control, and validator management.
+A modern React-based frontend for the ProductiveMiner $MINED Token Exchange, featuring live trading, portfolio management, market analysis, and blockchain integration.
 
 ## 🚀 Features
 
-### 📊 Real-time Dashboard
-- **Live Metrics**: Real-time display of algorithm efficiency, security strength, and learning rates
-- **Adaptive Learning Visualization**: Charts showing how the system learns from blocks
-- **Network Status**: Active miners, validators, and consensus performance
-- **Success Rate Tracking**: Block success rates and performance trends
+### 💎 Live Exchange Dashboard
+- **Real-time Price Ticker**: Live $MINED token price with 24h change
+- **Order Book**: Real-time bid/ask orders with depth visualization
+- **Recent Trades**: Live trade history with buy/sell indicators
+- **Market Statistics**: Volume, market cap, and circulating supply
+- **Trading Interface**: Buy/sell orders with price and amount inputs
+
+### 📈 Advanced Trading
+- **Multiple Order Types**: Market, Limit, and Stop Loss orders
+- **Professional Interface**: Order book, trade history, and open orders
+- **Real-time Updates**: Live price feeds and order book updates
+- **Trading Pairs**: MINED/USD, MINED/ETH, MINED/BTC, MINED/USDT
+- **Stop Loss & Take Profit**: Advanced risk management features
+
+### 💼 Portfolio Management
+- **Portfolio Overview**: Total value, unrealized P&L, and performance metrics
+- **Holdings Display**: Current positions with average price and current value
+- **Transaction History**: Complete trade history with timestamps
+- **Performance Analytics**: Daily, weekly, monthly, and yearly performance
+- **Real-time Updates**: Live portfolio value updates
+
+### 🌐 Market Overview
+- **Available Markets**: All trading pairs with status indicators
+- **Market Statistics**: Volume, market cap, and price data
+- **Market Details**: Detailed information about each trading pair
+- **Trading Features**: Supported currencies and trading hours
+- **Market Status**: Active and inactive pair indicators
 
 ### 🔍 Block Explorer
-- **Block Details**: Comprehensive view of each block with adaptive learning metrics
+- **Block Details**: Comprehensive view of each block with mining metrics
 - **Search & Filter**: Find blocks by number, work type, or miner address
 - **Performance Analysis**: Algorithm efficiency and security strength per block
 - **Validation Status**: PoS validation results and consensus information
@@ -28,14 +50,14 @@ A modern React-based frontend for the ProductiveMiner Adaptive Learning System, 
 - **Performance Metrics**: Success rates, reputation scores, and learning performance
 - **Consensus Monitoring**: Real-time consensus participation and validation results
 
-### 📈 Analytics Dashboard
+### 📊 Analytics Dashboard
 - **Performance Trends**: Historical data on algorithm efficiency and security
 - **Learning Analysis**: How the system adapts over time
 - **Resource Distribution**: Pie charts showing learning resource allocation
 - **Time-based Metrics**: Configurable time ranges for detailed analysis
 
 ### ⚙️ System Settings
-- **Adaptive Learning Parameters**: Configure algorithm, security, and consensus learning rates
+- **Exchange Configuration**: Trading parameters and fee settings
 - **Security Settings**: Quantum security levels and cryptographic parameters
 - **Network Configuration**: Validator requirements and consensus thresholds
 - **Feature Toggles**: Enable/disable various system features
@@ -51,7 +73,7 @@ A modern React-based frontend for the ProductiveMiner Adaptive Learning System, 
 
 ## 🎨 Design Features
 
-- **Dark Theme**: Modern dark theme optimized for monitoring
+- **Dark Theme**: Modern dark theme optimized for trading
 - **Responsive Design**: Works on desktop, tablet, and mobile
 - **Smooth Animations**: CSS animations and transitions
 - **Real-time Updates**: Live data updates with visual indicators
@@ -90,17 +112,35 @@ A modern React-based frontend for the ProductiveMiner Adaptive Learning System, 
    ```
 
 2. **Access the Application**
-   - Frontend: http://localhost:3002
+   - Exchange: http://localhost:3002
    - API: http://localhost:3000
    - Monitoring: http://localhost:3003
 
 ## 📱 Pages Overview
 
-### Dashboard (`/`)
-- Real-time metrics and performance indicators
-- Live charts showing adaptive learning progress
-- Network status and active participants
-- Success rate visualization
+### Exchange (`/`)
+- Live $MINED token price ticker
+- Real-time order book and trade history
+- Trading interface with buy/sell functionality
+- Market statistics and network status
+
+### Trading (`/trading`)
+- Advanced trading interface
+- Multiple order types (Market, Limit, Stop Loss)
+- Order book and trade history
+- Open orders management
+
+### Portfolio (`/portfolio`)
+- Portfolio value and performance metrics
+- Holdings display with P&L calculations
+- Transaction history and performance analytics
+- Real-time portfolio updates
+
+### Markets (`/markets`)
+- All available trading pairs
+- Market statistics and volume data
+- Trading pair details and information
+- Market status and features
 
 ### Block Explorer (`/blocks`)
 - Comprehensive block listing with search
@@ -128,7 +168,7 @@ A modern React-based frontend for the ProductiveMiner Adaptive Learning System, 
 
 ### Settings (`/settings`)
 - System configuration
-- Adaptive learning parameters
+- Exchange and trading parameters
 - Security and network settings
 - Feature toggles and preferences
 
@@ -146,48 +186,29 @@ NODE_ENV=production
 ### API Endpoints
 
 The frontend communicates with the backend API for:
+- Exchange data and price feeds
+- Trading order management
+- Portfolio and transaction data
 - Block data and metrics
 - Mining session management
 - Validator information
 - System settings and configuration
 - Real-time updates via WebSocket
 
-## 📊 Monitoring Integration
+## 📊 Exchange Integration
 
-### Grafana Dashboard
-- Access: http://localhost:3003
-- Username: `admin`
-- Password: `adaptive_admin`
+### Trading Features
+- **Real-time Price Feeds**: Live $MINED token prices
+- **Order Book Management**: Bid/ask order processing
+- **Trade Execution**: Market and limit order handling
+- **Portfolio Tracking**: Real-time position management
+- **Risk Management**: Stop loss and take profit orders
 
-### Prometheus Metrics
-- Access: http://localhost:9091
-- Metrics collection for all system components
-
-## 🎯 Key Features
-
-### Adaptive Learning Visualization
-- Real-time charts showing how algorithms adapt
-- Security strength evolution over time
-- Consensus optimization metrics
-- Learning rate adjustments
-
-### Block-based Learning
-- Each block contributes to system learning
-- Visual representation of learning progress
-- Performance metrics per block
-- Success/failure analysis
-
-### Hybrid PoW/PoS Interface
-- Mining session management
-- Validator registration and monitoring
-- Consensus participation tracking
-- Stake management interface
-
-### Quantum Security Integration
-- Security level configuration
-- Quantum-resistant parameter settings
-- Security strength monitoring
-- Cryptographic performance metrics
+### Market Data
+- **Price History**: Historical price charts and data
+- **Volume Analysis**: Trading volume and liquidity metrics
+- **Market Depth**: Order book depth visualization
+- **Trading Pairs**: Multiple currency pair support
 
 ## 🔒 Security Features
 
@@ -246,7 +267,7 @@ The frontend communicates with the backend API for:
 
 ## 📄 License
 
-This project is part of the ProductiveMiner Adaptive Learning System and follows the same license terms.
+This project is part of the ProductiveMiner $MINED Token Exchange and follows the same license terms.
 
 ## 🆘 Support
 
@@ -258,7 +279,7 @@ For issues and questions:
 
 ---
 
-**Built with ❤️ for the ProductiveMiner Adaptive Learning System** 
+**Built with ❤️ for the ProductiveMiner $MINED Token Exchange** 
 
 ## ✅ **Data Persistence Implementation Complete!**
 

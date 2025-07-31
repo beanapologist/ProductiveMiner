@@ -1,0 +1,20 @@
+{
+  "faucet": {
+    "enabled": true,
+    "amount": "1000000000000000000000",
+    "cooldown": 3600,
+    "maxRequests": 10,
+    "accounts": [
+      {
+        "address": "0xFfe7a1c2B61eB2bc64d3932F5Db1DA18CF92fFb9",
+        "privateKey": "0x82ca44f284c3a6026a49fe56eae093d9b5fb58d7af3e207498ceb8e81584abae",
+        "balance": "1000000000000000000000"
+      },
+      {
+        "address": "0x111B1c000d6fF7cE7b5e74A51bDA92beEFdcff26",
+        "privateKey": "0x106155f9d37d32cb257f63d549a1d84473ff7fe9fcd4ef2fc1ab2bfdfb5d386e",
+        "balance": "1000000000000000000000"
+      }
+    ]
+  }
+} 

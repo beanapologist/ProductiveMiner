@@ -2,7 +2,7 @@
 .layout {
   display: flex;
   flex-direction: column;
-  height: 100vh;
+  min-height: 100vh;
   background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
   color: #ffffff;
 }
@@ -16,6 +16,7 @@
   top: 0;
   z-index: 1000;
   backdrop-filter: blur(10px);
+  height: 80px;
 }
 
 .header-content {
@@ -218,11 +219,15 @@
   margin-left: 0;
   padding: 2rem;
   overflow-y: auto;
+  position: relative;
+  min-height: calc(100vh - 80px);
 }
 
 .content-wrapper {
   max-width: 1400px;
   margin: 0 auto;
+  position: relative;
+  padding-top: 0;
 }
 
 /* Mobile Overlay */
@@ -234,13 +239,14 @@
   bottom: 0;
   background: rgba(0, 0, 0, 0.5);
   z-index: 998;
+  display: none;
 }
 
 /* Responsive Design */
 @media (min-width: 768px) {
   .sidebar {
     transform: translateX(0);
-    position: relative;
+    position: fixed;
   }
   
   .main-content {

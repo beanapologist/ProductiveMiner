@@ -19,7 +19,7 @@ const Discoveries = () => {
   const fetchDiscoveries = async () => {
     try {
       setLoading(true);
-      const response = await fetch('http://localhost:3002/api/discoveries');
+      const response = await fetch('http://localhost:3000/api/discoveries');
       if (!response.ok) {
         throw new Error('Failed to fetch discoveries');
       }
@@ -45,7 +45,7 @@ const Discoveries = () => {
     try {
       console.log('Testing discovery:', discoveryId);
       
-      const response = await fetch(`http://localhost:3002/api/discoveries/${discoveryId}/test`, {
+      const response = await fetch(`http://localhost:3000/api/discoveries/${discoveryId}/test`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
@@ -86,7 +86,7 @@ const Discoveries = () => {
     try {
       console.log('Deploying discovery:', discoveryId);
       
-      const response = await fetch(`http://localhost:3002/api/discoveries/${discoveryId}/deploy`, {
+      const response = await fetch(`http://localhost:3000/api/discoveries/${discoveryId}/deploy`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'

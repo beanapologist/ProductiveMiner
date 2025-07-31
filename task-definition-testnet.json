@@ -1,0 +1,46 @@
+{
+  "family": "ProductiveMiner-Testnet",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "1024",
+  "memory": "2048",
+  "executionRoleArn": "arn:aws:iam::036160411444:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "testnet-node",
+      "image": "036160411444.dkr.ecr.us-east-1.amazonaws.com/productiveminer-testnet:latest",
+      "portMappings": [
+        {
+          "containerPort": 9944,
+          "protocol": "tcp"
+        },
+        {
+          "containerPort": 9945,
+          "protocol": "tcp"
+        },
+        {
+          "containerPort": 30333,
+          "protocol": "tcp"
+        },
+        {
+          "containerPort": 9615,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "NODE_ENV",
+          "value": "testnet"
+        }
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ProductiveMiner-Testnet",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

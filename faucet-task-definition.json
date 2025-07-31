@@ -1,0 +1,39 @@
+{
+  "family": "ProductiveMiner-Faucet",
+  "networkMode": "awsvpc",
+  "requiresCompatibilities": ["FARGATE"],
+  "cpu": "256",
+  "memory": "512",
+  "executionRoleArn": "arn:aws:iam::036160411444:role/ecsTaskExecutionRole",
+  "containerDefinitions": [
+    {
+      "name": "faucet",
+      "image": "node:18-alpine",
+      "portMappings": [
+        {
+          "containerPort": 3001,
+          "protocol": "tcp"
+        }
+      ],
+      "environment": [
+        {
+          "name": "RPC_URL",
+          "value": "ws://localhost:9944"
+        }
+      ],
+      "command": [
+        "sh",
+        "-c",
+        "npm install @polkadot/api @polkadot/keyring @polkadot/util-crypto express && node /app/testnet-faucet.js"
+      ],
+      "logConfiguration": {
+        "logDriver": "awslogs",
+        "options": {
+          "awslogs-group": "/ecs/ProductiveMiner-Faucet",
+          "awslogs-region": "us-east-1",
+          "awslogs-stream-prefix": "ecs"
+        }
+      }
+    }
+  ]
+}

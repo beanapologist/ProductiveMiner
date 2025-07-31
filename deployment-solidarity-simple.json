@@ -1,0 +1,16 @@
+{
+  "minedToken": {
+    "address": "0x50d47a6ad8372ED91b64cBa63E2d97987061Ab5B",
+    "name": "ProductiveMiner Token",
+    "symbol": "MINED",
+    "decimals": 18
+  },
+  "solidarityContract": {
+    "address": "0x8e3C655A430495847C35579f27BebFd241DDEe9E",
+    "name": "ProductiveMiner Solidarity (Simplified)",
+    "network": "ProductiveMiner TestNet",
+    "chainId": 1337
+  },
+  "deployer": "0xFfe7a1c2B61eB2bc64d3932F5Db1DA18CF92fFb9",
+  "deployedAt": "2025-07-31T05:31:45.322Z"
+}

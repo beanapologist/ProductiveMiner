@@ -1,0 +1,49 @@
+{
+  "name": "ProductiveMiner Testnet",
+  "id": "productiveminer-testnet",
+  "chainType": "Live",
+  "bootNodes": [
+    "/ip4/127.0.0.1/tcp/30333/p2p/QmTestNode1",
+    "/ip4/127.0.0.1/tcp/30333/p2p/QmTestNode2"
+  ],
+  "telemetryEndpoints": null,
+  "protocolId": "pm-testnet",
+  "properties": {
+    "tokenDecimals": 18,
+    "tokenSymbol": "MINED"
+  },
+  "genesis": {
+    "runtime": {
+      "system": {
+        "code": "0x..."
+      },
+      "balances": {
+        "balances": [
+          ["5GrwvaEF5zXb26Fz9rcQpDWS57CtERHpNehXCPcNoHGKutQY", 1000000000000000000000],
+          ["5FHneW46xGXgs5mUiveU4sbTyGBzmstUspZC92UhjJM694ty", 1000000000000000000000],
+          ["5FLSigC9HGRKVhB9FiEo4Y3koPsNmBmLJbpXg2mp1hXcS59Y", 1000000000000000000000]
+        ]
+      },
+      "productiveMiner": {
+        "workTypes": [
+          "Prime Pattern Discovery",
+          "Riemann Zero Computation", 
+          "Yang-Mills Field Theory",
+          "Goldbach Conjecture Verification",
+          "Navier-Stokes Simulation",
+          "Birch-Swinnerton-Dyer",
+          "Elliptic Curve Cryptography",
+          "Lattice Cryptography",
+          "Poincaré Conjecture"
+        ],
+        "maxDifficulty": 1000,
+        "baseReward": 1000000000000000000,
+        "blockTime": 6,
+        "quantumSecurityLevel": 256,
+        "minStakeAmount": 100000000000000000000,
+        "powRewardMultiplier": 10,
+        "posRewardMultiplier": 5
+      }
+    }
+  }
+} 

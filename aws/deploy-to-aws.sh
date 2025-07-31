@@ -89,7 +89,7 @@ aws cloudformation create-stack \
     --stack-name $STACK_NAME \
     --template-body file://infrastructure.yaml \
     --parameters ParameterKey=Environment,ParameterValue=$ENVIRONMENT ParameterKey=DomainName,ParameterValue=$DOMAIN_NAME \
-    --capabilities CAPABILITY_IAM \
+    --capabilities CAPABILITY_IAM CAPABILITY_NAMED_IAM \
     --region $REGION
 
 print_success "CloudFormation stack creation initiated"

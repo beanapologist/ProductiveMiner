@@ -4,6 +4,7 @@ services:
   # Adaptive Learning Blockchain Node (Ganache for Development)
   adaptive-node:
     image: trufflesuite/ganache:latest
+    platform: linux/amd64
     container_name: adaptive-blockchain-node
     ports:
       - "8545:8545"
@@ -21,6 +22,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.adaptive
+    platform: linux/amd64
     container_name: adaptive-app
     ports:
       - "3002:3000"
@@ -30,6 +32,19 @@ services:
     environment:
       - NODE_ENV=production
       - PORT=3000
+      - HOST=0.0.0.0
+      - TESTNET_MODE=true
+      - MAX_CONCURRENT_SESSIONS=50
+      - DEFAULT_DIFFICULTY=25
+      - BLOCK_TIME_SECONDS=30
+      - MAX_MINING_SESSIONS_PER_IP=10
+      - JWT_SECRET=testnet_jwt_secret_please_change_this_in_production
+      - ENCRYPTION_KEY=testnet_32_byte_encryption_key_change_this
+      - LOG_LEVEL=info
+      - ENABLE_DEBUG_LOGS=true
+      - METRICS_ENABLED=true
+      - ENABLE_ALL_WORK_TYPES=true
+      - QUANTUM_SECURITY_LEVEL=256
       - BLOCKCHAIN_URL=http://localhost:8545
     depends_on:
       - adaptive-node
@@ -41,6 +56,7 @@ services:
     build:
       context: ./frontend
       dockerfile: Dockerfile
+    platform: linux/amd64
     container_name: adaptive-frontend
     ports:
       - "3004:80"
@@ -54,6 +70,7 @@ services:
   # PostgreSQL Database
   adaptive-db:
     image: postgres:15-alpine
+    platform: linux/amd64
     container_name: adaptive-db
     ports:
       - "5432:5432"
@@ -69,6 +86,7 @@ services:
   # Redis Cache
   adaptive-redis:
     image: redis:7-alpine
+    platform: linux/amd64
     container_name: adaptive-redis
     ports:
       - "6379:6379"
@@ -80,6 +98,7 @@ services:
   # Nginx Reverse Proxy
   adaptive-nginx:
     image: nginx:alpine
+    platform: linux/amd64
     container_name: adaptive-nginx
     ports:
       - "80:80"
@@ -94,6 +113,7 @@ services:
   # Prometheus Monitoring
   adaptive-metrics:
     image: prom/prometheus:latest
+    platform: linux/amd64
     container_name: adaptive-metrics
     ports:
       - "9090:9090"
@@ -111,6 +131,7 @@ services:
   # Grafana Dashboard
   adaptive-monitor:
     image: grafana/grafana:latest
+    platform: linux/amd64
     container_name: adaptive-monitor
     ports:
       - "3003:3000"
@@ -125,6 +146,7 @@ services:
   # Backup Service
   adaptive-backup:
     image: postgres:15-alpine
+    platform: linux/amd64
     container_name: adaptive-backup
     volumes:
       - ./data/backups:/backups

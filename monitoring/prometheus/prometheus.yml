@@ -1,18 +1,28 @@
 global:
   scrape_interval: 15s
+  evaluation_interval: 15s
+
+rule_files:
+  - "rules/*.yml"
 
 scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
   - job_name: 'adaptive-app'
     static_configs:
-      - targets: ['adaptive-app:3001']
+      - targets: ['adaptive-app:3000']
     metrics_path: '/metrics'
+    scrape_interval: 10s
 
   - job_name: 'adaptive-node'
     static_configs:
-      - targets: ['adaptive-node:8545']
-    metrics_path: '/metrics'
+      - targets: ['adaptive-blockchain-node:8545']
+    scrape_interval: 30s
 
-  - job_name: 'adaptive-frontend'
+  - job_name: 'nginx'
     static_configs:
-      - targets: ['adaptive-frontend:3000']
-    metrics_path: '/health'
+      - targets: ['adaptive-nginx:80']
+    metrics_path: '/nginx_status'
+    scrape_interval: 10s

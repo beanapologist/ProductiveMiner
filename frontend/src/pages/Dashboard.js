@@ -1,7 +1,9 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import './Dashboard.css';
 
 const Dashboard = ({ sharedData }) => {
+  console.log('Exchange Dashboard sharedData:', sharedData);
+
   const {
     blockchainData,
     miningState,
@@ -9,237 +11,377 @@ const Dashboard = ({ sharedData }) => {
     discoveriesData,
     systemHealth,
     formatNumber,
-    formatBitStrength
+    formatBitStrength,
+    formatCurrency
   } = sharedData;
+
+  // Exchange-specific state
+  const [exchangeData, setExchangeData] = useState({
+    currentPrice: 0.85,
+    priceChange24h: 0.12,
+    priceChangePercent: 14.12,
+    volume24h: 1250000,
+    marketCap: 85000000,
+    circulatingSupply: 100000000,
+    totalSupply: 1000000000,
+    high24h: 0.92,
+    low24h: 0.78,
+    lastUpdated: new Date()
+  });
+
+  // Fetch real-time trading data
+  useEffect(() => {
+    if (!sharedData.isConnected) return;
+
+    const fetchTradingData = async () => {
+      try {
+        const status = await sharedData.apiService.getSystemStatus();
+        if (status.trading) {
+          setExchangeData(prev => ({
+            ...prev,
+            currentPrice: status.trading.price || prev.currentPrice,
+            priceChange24h: status.trading.change24h || prev.priceChange24h,
+            priceChangePercent: ((status.trading.price - (status.trading.price - status.trading.change24h)) / (status.trading.price - status.trading.change24h)) * 100 || prev.priceChangePercent,
+            volume24h: status.trading.volume24h || prev.volume24h,
+            high24h: status.trading.high24h || prev.high24h,
+            low24h: status.trading.low24h || prev.low24h,
+            lastUpdated: new Date()
+          }));
+        }
+      } catch (error) {
+        console.error('Error fetching trading data:', error);
+      }
+    };
+
+    // Initial fetch
+    fetchTradingData();
+
+    // Set up polling every 10 seconds
+    const interval = setInterval(fetchTradingData, 10000);
+
+    return () => clearInterval(interval);
+  }, [sharedData.isConnected, sharedData.apiService]);
+
+  const [orderBook, setOrderBook] = useState({
+    bids: [
+      { price: 0.84, amount: 50000, total: 42000 },
+      { price: 0.83, amount: 75000, total: 62250 },
+      { price: 0.82, amount: 100000, total: 82000 },
+      { price: 0.81, amount: 125000, total: 101250 },
+      { price: 0.80, amount: 150000, total: 120000 }
+    ],
+    asks: [
+      { price: 0.86, amount: 45000, total: 38700 },
+      { price: 0.87, amount: 70000, total: 60900 },
+      { price: 0.88, amount: 95000, total: 83600 },
+      { price: 0.89, amount: 120000, total: 106800 },
+      { price: 0.90, amount: 145000, total: 130500 }
+    ]
+  });
+
+  const [recentTrades, setRecentTrades] = useState([
+    { time: '14:32:15', price: 0.85, amount: 2500, type: 'buy' },
+    { time: '14:31:42', price: 0.84, amount: 1800, type: 'sell' },
+    { time: '14:31:18', price: 0.85, amount: 3200, type: 'buy' },
+    { time: '14:30:55', price: 0.86, amount: 1500, type: 'sell' },
+    { time: '14:30:23', price: 0.85, amount: 4200, type: 'buy' },
+    { time: '14:29:58', price: 0.84, amount: 2800, type: 'sell' },
+    { time: '14:29:31', price: 0.85, amount: 1900, type: 'buy' },
+    { time: '14:29:05', price: 0.86, amount: 3600, type: 'sell' }
+  ]);
+
+  const [tradingForm, setTradingForm] = useState({
+    type: 'buy',
+    amount: '',
+    price: '',
+    total: ''
+  });
+
+  // Simulate real-time price updates
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setExchangeData(prev => {
+        const priceChange = (Math.random() - 0.5) * 0.02;
+        const newPrice = Math.max(0.50, Math.min(1.50, prev.currentPrice + priceChange));
+        const priceChangePercent = ((newPrice - prev.currentPrice) / prev.currentPrice) * 100;
+        
+        return {
+          ...prev,
+          currentPrice: newPrice,
+          priceChange24h: newPrice - 0.73, // Assuming 24h ago price was 0.73
+          priceChangePercent: priceChangePercent,
+          lastUpdated: new Date(),
+          volume24h: prev.volume24h + Math.random() * 10000,
+          marketCap: newPrice * prev.circulatingSupply
+        };
+      });
+
+      // Update order book
+      setOrderBook(prev => ({
+        bids: prev.bids.map(bid => ({
+          ...bid,
+          amount: bid.amount + (Math.random() - 0.5) * 1000,
+          total: (bid.amount + (Math.random() - 0.5) * 1000) * bid.price
+        })),
+        asks: prev.asks.map(ask => ({
+          ...ask,
+          amount: ask.amount + (Math.random() - 0.5) * 1000,
+          total: (ask.amount + (Math.random() - 0.5) * 1000) * ask.price
+        }))
+      }));
+
+      // Add new trades
+      setRecentTrades(prev => {
+        const newTrade = {
+          time: new Date().toLocaleTimeString(),
+          price: exchangeData.currentPrice + (Math.random() - 0.5) * 0.02,
+          amount: Math.floor(Math.random() * 5000) + 500,
+          type: Math.random() > 0.5 ? 'buy' : 'sell'
+        };
+        return [newTrade, ...prev.slice(0, 7)];
+      });
+    }, 3000);
+
+    return () => clearInterval(interval);
+  }, [exchangeData.currentPrice]);
+
+  const handleTradingFormChange = (field, value) => {
+    setTradingForm(prev => {
+      const updated = { ...prev, [field]: value };
+      
+      // Calculate total when amount or price changes
+      if (field === 'amount' || field === 'price') {
+        const amount = parseFloat(updated.amount) || 0;
+        const price = parseFloat(updated.price) || 0;
+        updated.total = (amount * price).toFixed(2);
+      }
+      
+      return updated;
+    });
+  };
+
+  const handleTrade = () => {
+    // Simulate trade execution
+    alert(`Order placed: ${tradingForm.type.toUpperCase()} ${tradingForm.amount} MINED at $${tradingForm.price}`);
+    setTradingForm({ type: 'buy', amount: '', price: '', total: '' });
+  };
+
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat('en-US', {
+      style: 'currency',
+      currency: 'USD',
+      minimumFractionDigits: 2,
+      maximumFractionDigits: 4
+    }).format(price);
+  };
+
+  const formatVolume = (volume) => {
+    if (volume >= 1000000) {
+      return `$${(volume / 1000000).toFixed(1)}M`;
+    } else if (volume >= 1000) {
+      return `$${(volume / 1000).toFixed(1)}K`;
+    }
+    return `$${volume.toFixed(0)}`;
+  };
 
   return (
     <div className="dashboard">
       <div className="dashboard-header">
-        <h1>System Overview</h1>
-        <p>Real-time monitoring of the ProductiveMiner Adaptive Learning System</p>
+        <h1>💎 $MINED Token Exchange</h1>
+        <p>Live trading for ProductiveMiner's revolutionary blockchain token</p>
       </div>
 
-      {/* System Health Cards */}
-      <div className="metrics-grid">
-        <div className="metric-card">
-          <div className="metric-icon">⚡</div>
-          <div className="metric-content">
-            <h3>System Health</h3>
-            <div className="metric-value">
-              <span className={`status-badge ${systemHealth.status}`}>
-                {systemHealth.status}
-              </span>
-            </div>
-            <div className="metric-details">
-              <span>Uptime: {Math.floor(systemHealth.uptime / 3600)}h</span>
-              <span>Connections: {systemHealth.activeConnections}</span>
-            </div>
+      {/* Price Ticker */}
+      <div className="price-ticker">
+        <div className="ticker-main">
+          <div className="ticker-symbol">
+            <h2>$MINED</h2>
+            <span className="ticker-name">ProductiveMiner Token</span>
+          </div>
+          <div className="ticker-price">
+            <span className="current-price">{formatPrice(exchangeData.currentPrice)}</span>
+            <span className={`price-change ${exchangeData.priceChangePercent >= 0 ? 'positive' : 'negative'}`}>
+              {exchangeData.priceChangePercent >= 0 ? '+' : ''}{exchangeData.priceChangePercent.toFixed(2)}%
+            </span>
           </div>
         </div>
-
-        <div className="metric-card">
-          <div className="metric-icon">🔗</div>
-          <div className="metric-content">
-            <h3>Blockchain</h3>
-            <div className="metric-value">{formatNumber(blockchainData.height)}</div>
-            <div className="metric-details">
-              <span>Total Blocks: {formatNumber(blockchainData.totalBlocks)}</span>
-              <span>Avg Block Time: {blockchainData.avgBlockTime}s</span>
-            </div>
+        <div className="ticker-stats">
+          <div className="stat-item">
+            <span className="stat-label">24h Volume</span>
+            <span className="stat-value">{formatVolume(exchangeData.volume24h)}</span>
           </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="metric-icon">⛏️</div>
-          <div className="metric-content">
-            <h3>Mining</h3>
-            <div className="metric-value">{miningState.activeSessions.length}</div>
-            <div className="metric-details">
-              <span>Active Sessions</span>
-              <span>Difficulty: {miningState.difficulty}</span>
-            </div>
+          <div className="stat-item">
+            <span className="stat-label">Market Cap</span>
+            <span className="stat-value">{formatVolume(exchangeData.marketCap)}</span>
           </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="metric-icon">🏛️</div>
-          <div className="metric-content">
-            <h3>Validators</h3>
-            <div className="metric-value">{validatorsData.activeValidators}</div>
-            <div className="metric-details">
-              <span>Active Validators</span>
-              <span>Consensus: {validatorsData.consensusRate}%</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="metric-icon">🔬</div>
-          <div className="metric-content">
-            <h3>Discoveries</h3>
-            <div className="metric-value">{discoveriesData.totalDiscoveries}</div>
-            <div className="metric-details">
-              <span>Total Discoveries</span>
-              <span>Pending: {discoveriesData.pendingValidation}</span>
-            </div>
-          </div>
-        </div>
-
-        <div className="metric-card">
-          <div className="metric-icon">💰</div>
-          <div className="metric-content">
-            <h3>Rewards</h3>
-            <div className="metric-value">{formatNumber(blockchainData.totalRewards)}</div>
-            <div className="metric-details">
-              <span>Total Rewards</span>
-              <span>Transactions: {formatNumber(blockchainData.totalTransactions)}</span>
-            </div>
+          <div className="stat-item">
+            <span className="stat-label">Circulating Supply</span>
+            <span className="stat-value">{formatNumber(exchangeData.circulatingSupply)} MINED</span>
           </div>
         </div>
       </div>
 
-      {/* Mining Control Section */}
-      <div className="dashboard-section">
-        <h2>Mining Control</h2>
-        <div className="mining-control">
-          <div className="work-types">
-            <h3>Available Work Types</h3>
-            <div className="work-types-grid">
-              {miningState.workTypes.map((workType, index) => (
-                <div key={index} className="work-type-card">
-                  <div className="work-type-icon">{workType.icon}</div>
-                  <div className="work-type-info">
-                    <h4>{workType.name}</h4>
-                    <p>{workType.description}</p>
-                    <span className="difficulty-badge">
-                      Difficulty: {workType.difficulty}
-                    </span>
-                  </div>
+      {/* Trading Interface */}
+      <div className="trading-interface">
+        <div className="trading-left">
+          {/* Order Book */}
+          <div className="order-book">
+            <h3>Order Book</h3>
+            <div className="order-book-header">
+              <span>Price (USD)</span>
+              <span>Amount (MINED)</span>
+              <span>Total (USD)</span>
+            </div>
+            <div className="asks">
+              {orderBook.asks.slice().reverse().map((ask, index) => (
+                <div key={`ask-${index}`} className="order-row ask">
+                  <span className="price">{formatPrice(ask.price)}</span>
+                  <span className="amount">{formatNumber(ask.amount)}</span>
+                  <span className="total">{formatPrice(ask.total)}</span>
+                </div>
+              ))}
+            </div>
+            <div className="current-price-row">
+              <span className="current-price-label">Current Price</span>
+              <span className="current-price-value">{formatPrice(exchangeData.currentPrice)}</span>
+            </div>
+            <div className="bids">
+              {orderBook.bids.map((bid, index) => (
+                <div key={`bid-${index}`} className="order-row bid">
+                  <span className="price">{formatPrice(bid.price)}</span>
+                  <span className="amount">{formatNumber(bid.amount)}</span>
+                  <span className="total">{formatPrice(bid.total)}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="mining-session">
-            <h3>Start Mining Session</h3>
-            <div className="session-form">
-              <div className="form-group">
-                <label>Work Type</label>
-                <select className="form-select">
-                  <option>Select a work type...</option>
-                  {miningState.workTypes.map((workType, index) => (
-                    <option key={index} value={workType.name}>
-                      {workType.name}
-                    </option>
-                  ))}
-                </select>
-              </div>
-
-              <div className="form-group">
-                <label>Difficulty Level</label>
-                <div className="difficulty-slider">
-                  <input 
-                    type="range" 
-                    min="1" 
-                    max="100" 
-                    value={miningState.difficulty}
-                    className="slider"
-                  />
-                  <span className="difficulty-value">{miningState.difficulty}</span>
+          {/* Recent Trades */}
+          <div className="recent-trades">
+            <h3>Recent Trades</h3>
+            <div className="trades-header">
+              <span>Time</span>
+              <span>Price</span>
+              <span>Amount</span>
+            </div>
+            <div className="trades-list">
+              {recentTrades.map((trade, index) => (
+                <div key={index} className={`trade-row ${trade.type}`}>
+                  <span className="time">{trade.time}</span>
+                  <span className="price">{formatPrice(trade.price)}</span>
+                  <span className="amount">{formatNumber(trade.amount)}</span>
                 </div>
-              </div>
+              ))}
+            </div>
+          </div>
+        </div>
 
-              <button className="start-mining-btn">
-                🚀 Start Mining Session
+        <div className="trading-right">
+          {/* Trading Form */}
+          <div className="trading-form">
+            <h3>Trade $MINED</h3>
+            <div className="form-tabs">
+              <button 
+                className={`tab ${tradingForm.type === 'buy' ? 'active' : ''}`}
+                onClick={() => setTradingForm(prev => ({ ...prev, type: 'buy' }))}
+              >
+                Buy
+              </button>
+              <button 
+                className={`tab ${tradingForm.type === 'sell' ? 'active' : ''}`}
+                onClick={() => setTradingForm(prev => ({ ...prev, type: 'sell' }))}
+              >
+                Sell
               </button>
             </div>
+            
+            <div className="form-group">
+              <label>Amount (MINED)</label>
+              <input
+                type="number"
+                value={tradingForm.amount}
+                onChange={(e) => handleTradingFormChange('amount', e.target.value)}
+                placeholder="0.00"
+                step="0.01"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Price (USD)</label>
+              <input
+                type="number"
+                value={tradingForm.price}
+                onChange={(e) => handleTradingFormChange('price', e.target.value)}
+                placeholder="0.00"
+                step="0.01"
+              />
+            </div>
+            
+            <div className="form-group">
+              <label>Total (USD)</label>
+              <input
+                type="number"
+                value={tradingForm.total}
+                readOnly
+                placeholder="0.00"
+              />
+            </div>
+            
+            <button 
+              className={`trade-button ${tradingForm.type}`}
+              onClick={handleTrade}
+              disabled={!tradingForm.amount || !tradingForm.price}
+            >
+              {tradingForm.type.toUpperCase()} MINED
+            </button>
+          </div>
+
+          {/* Market Stats */}
+          <div className="market-stats">
+            <h3>Market Statistics</h3>
+            <div className="stat-grid">
+              <div className="stat-item">
+                <span className="stat-label">24h High</span>
+                <span className="stat-value">{formatPrice(exchangeData.high24h)}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">24h Low</span>
+                <span className="stat-value">{formatPrice(exchangeData.low24h)}</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Total Supply</span>
+                <span className="stat-value">{formatNumber(exchangeData.totalSupply)} MINED</span>
+              </div>
+              <div className="stat-item">
+                <span className="stat-label">Last Updated</span>
+                <span className="stat-value">{exchangeData.lastUpdated.toLocaleTimeString()}</span>
+              </div>
+            </div>
           </div>
         </div>
       </div>
 
-      {/* Mining Process Phases */}
-      <div className="dashboard-section">
-        <h2>Mining Process Phases</h2>
-        <div className="phases-grid">
-          <div className="phase-card">
-            <div className="phase-icon">⛏️</div>
-            <h4>Mining Phase</h4>
-            <p>Computational work execution with quantum-secured algorithms</p>
+      {/* Network Status */}
+      <div className="network-status-section">
+        <h3>🔗 Network Status</h3>
+        <div className="status-grid">
+          <div className="status-card">
+            <span className="status-label">Block Height</span>
+            <span className="status-value">{blockchainData?.height || 0}</span>
           </div>
-
-          <div className="phase-card">
-            <div className="phase-icon">✅</div>
-            <h4>Validation Phase</h4>
-            <p>Proof of Stake consensus and mathematical verification</p>
+          <div className="status-card">
+            <span className="status-label">Active Miners</span>
+            <span className="status-value">{miningState?.activeSessions?.length || 0}</span>
           </div>
-
-          <div className="phase-card">
-            <div className="phase-icon">🔍</div>
-            <h4>Discovery Phase</h4>
-            <p>Pattern recognition and mathematical breakthroughs</p>
+          <div className="status-card">
+            <span className="status-label">Validators</span>
+            <span className="status-value">{validatorsData?.validators?.length || 0}</span>
           </div>
-
-          <div className="phase-card">
-            <div className="phase-icon">🔄</div>
-            <h4>Adaptation Phase</h4>
-            <p>Dynamic difficulty adjustment and learning cycles</p>
-          </div>
-
-          <div className="phase-card">
-            <div className="phase-icon">⚡</div>
-            <h4>Optimization Phase</h4>
-            <p>Performance tuning and efficiency improvements</p>
-          </div>
-
-          <div className="phase-card">
-            <div className="phase-icon">🔒</div>
-            <h4>Security Phase</h4>
-            <p>Quantum-resistant cryptography and threat detection</p>
-          </div>
-        </div>
-      </div>
-
-      {/* Mathematical Mining Capabilities */}
-      <div className="dashboard-section">
-        <h2>Mathematical Mining Capabilities</h2>
-        <div className="capabilities-grid">
-          <div className="capability-card">
-            <h3>Unlimited Bit Strength</h3>
-            <p>Our productive miner replaces arbitrary SHA-256 hashing with real mathematical computations, enabling unlimited bit strength through continuous mathematical work.</p>
-            <div className="capability-metrics">
-              <div className="metric">
-                <span>Current Bit Strength:</span>
-                <span className="value">{formatBitStrength(256)}</span>
-              </div>
-              <div className="metric">
-                <span>Max Bit Strength:</span>
-                <span className="value">∞ (Unlimited)</span>
-              </div>
-            </div>
-          </div>
-
-          <div className="capability-card">
-            <h3>Hybrid PoW/PoS</h3>
-            <p>Combines Proof of Work (mathematical computations) with Proof of Stake (validator consensus) for enhanced security and efficiency.</p>
-            <div className="capability-features">
-              <span className="feature">⛏️ Mathematical PoW</span>
-              <span className="feature">🔒 Stake-based PoS</span>
-            </div>
-          </div>
-
-          <div className="capability-card">
-            <h3>Adaptive Algorithms</h3>
-            <p>Dynamic difficulty adjustment and learning algorithms that improve efficiency and security over time through mathematical discoveries.</p>
-            <div className="capability-metrics">
-              <div className="metric">
-                <span>Learning Cycles:</span>
-                <span className="value">0</span>
-              </div>
-              <div className="metric">
-                <span>Mathematical Efficiency:</span>
-                <span className="value">85%</span>
-              </div>
-            </div>
+          <div className="status-card">
+            <span className="status-label">System Status</span>
+            <span className={`status-value ${systemHealth?.status || 'loading'}`}>
+              {(systemHealth?.status || 'LOADING').toUpperCase()}
+            </span>
           </div>
         </div>
       </div>

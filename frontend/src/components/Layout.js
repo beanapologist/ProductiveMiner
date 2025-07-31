@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { Link, useLocation } from 'react-router-dom';
+import ConnectionStatus from './ConnectionStatus';
 import './Layout.css';
 
 const Layout = ({ children, sharedData }) => {
@@ -7,13 +8,16 @@ const Layout = ({ children, sharedData }) => {
   const location = useLocation();
 
   const navigationItems = [
-    { path: '/', label: 'Dashboard', icon: '📊' },
+    { path: '/', label: 'Exchange', icon: '💎' },
+    { path: '/trading', label: 'Trading', icon: '📈' },
+    { path: '/wallet', label: 'Wallet', icon: '💰' },
+    { path: '/markets', label: 'Markets', icon: '🌐' },
     { path: '/blocks', label: 'Block Explorer', icon: '🔍' },
     { path: '/mining', label: 'Mining Control', icon: '⛏️' },
     { path: '/validators', label: 'Validators', icon: '🏛️' },
-    { path: '/analytics', label: 'Analytics', icon: '📈' },
+    { path: '/analytics', label: 'Analytics', icon: '📊' },
     { path: '/discoveries', label: 'Discoveries', icon: '🔬' },
-    { path: '/comprehensive-analytics', label: 'Comprehensive Analytics', icon: '🧠' },
+    { path: '/research', label: 'Research', icon: '📚' },
     { path: '/settings', label: 'Settings', icon: '⚙️' }
   ];
 
@@ -21,6 +25,9 @@ const Layout = ({ children, sharedData }) => {
 
   return (
     <div className="layout">
+      {/* Connection Status Widget */}
+      <ConnectionStatus />
+      
       {/* Header */}
       <header className="header">
         <div className="header-content">
@@ -33,7 +40,7 @@ const Layout = ({ children, sharedData }) => {
             </button>
             <div className="logo">
               <h1>ProductiveMiner</h1>
-              <span className="subtitle">Quantum-Secured Blockchain Mining</span>
+              <span className="subtitle">$MINED Token Exchange</span>
             </div>
           </div>
           
