@@ -24,12 +24,13 @@
    QUANTUM_SECURITY_LEVEL=256
    MAX_CONCURRENT_SESSIONS=100
    DEFAULT_DIFFICULTY=25
+   PORT=3000
    ```
 
 3. **Deploy**
-   - Railway will automatically detect the Docker setup
-   - It will use `docker-compose.testnet.yml` for deployment
+   - Railway will use `Dockerfile.railway` for deployment
    - The API will be available on the Railway domain
+   - Health check will be at `/api/health`
 
 4. **Update Frontend API URL**
    - After deployment, update `frontend/src/services/api.js`

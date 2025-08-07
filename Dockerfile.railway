@@ -1,4 +1,4 @@
-# ProductiveMiner Testnet Dockerfile
+# Railway-optimized Dockerfile for ProductiveMiner
 FROM node:20-alpine
 
 # Set working directory
@@ -13,8 +13,8 @@ RUN apk add --no-cache \
 # Copy package files
 COPY package*.json ./
 
-# Install dependencies (including dev dependencies for Railway)
-RUN npm ci
+# Install all dependencies (Railway handles production vs dev)
+RUN npm install
 
 # Copy source code
 COPY . .
