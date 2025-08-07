@@ -1,9 +1,8 @@
 // API service for connecting to backend blockchain data
-const API_BASE_URL = process.env.REACT_APP_API_URL || 'http://localhost:3000';
-
+// Using direct API URL for browser access
 class ApiService {
   constructor() {
-    this.baseURL = API_BASE_URL;
+    this.baseURL = 'http://localhost:3000';
     this.isConnected = false;
     this.connectionAttempts = 0;
     this.maxRetries = 3;

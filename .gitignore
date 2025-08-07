@@ -199,3 +199,12 @@ node/target/
 !hardhat.config.adaptive.js
 !Dockerfile.adaptive
 !Dockerfile
+
+# Development and build artifacts
+.venv/
+venv/
+node_modules/
+dist/
+logs/
+deploy.sh
+
