@@ -1,10 +1,12 @@
 // API service for connecting to backend blockchain data
-// Using Railway configuration for production deployment
-import { getBackendUrl } from '../config/railway.js';
-
 class ApiService {
   constructor() {
-    this.baseURL = getBackendUrl();
+    // Simple localhost detection for development
+    const isLocalhost = window.location.hostname === 'localhost' || 
+                       window.location.hostname === '127.0.0.1' ||
+                       window.location.hostname === '';
+    
+    this.baseURL = isLocalhost ? 'http://localhost:3000' : 'https://productiveminer.up.railway.app';
     this.isConnected = false;
     this.connectionAttempts = 0;
     this.maxRetries = 3;
