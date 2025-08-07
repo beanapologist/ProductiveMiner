@@ -1,4 +1,5 @@
-FROM --platform=linux/amd64 node:18-alpine as builder
+# Frontend Dockerfile for Railway
+FROM node:20-alpine
 
 # Set working directory
 WORKDIR /app
@@ -7,25 +8,19 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm ci
+RUN npm install
 
 # Copy source code
 COPY . .
 
-# Build the app
+# Build the React app
 RUN npm run build
 
-# Production stage
-FROM --platform=linux/amd64 nginx:alpine
-
-# Copy built app
-COPY --from=builder /app/build /usr/share/nginx/html
-
-# Copy nginx configuration
-COPY nginx.conf /etc/nginx/nginx.conf
+# Install serve to run the built app
+RUN npm install -g serve
 
 # Expose port
-EXPOSE 3001
+EXPOSE 3000
 
-# Start nginx
-CMD ["nginx", "-g", "daemon off;"] 
+# Start the application
+CMD ["serve", "-s", "build", "-l", "3000"] 

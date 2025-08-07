@@ -1,8 +1,10 @@
 // API service for connecting to backend blockchain data
-// Using direct API URL for browser access
+// Using Railway configuration for production deployment
+import { getBackendUrl } from '../config/railway.js';
+
 class ApiService {
   constructor() {
-    this.baseURL = 'http://localhost:3000';
+    this.baseURL = getBackendUrl();
     this.isConnected = false;
     this.connectionAttempts = 0;
     this.maxRetries = 3;
