@@ -8,10 +8,14 @@ WORKDIR /app
 COPY package*.json ./
 
 # Install dependencies
-RUN npm install
+RUN npm ci --only=production
 
 # Copy source code
 COPY . .
+
+# Set environment for production build
+ENV NODE_ENV=production
+ENV CI=false
 
 # Build the React app
 RUN npm run build
