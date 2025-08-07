@@ -1805,25 +1805,7 @@ app.use(express.json({ limit: process.env['MAX_REQUEST_SIZE'] || '10mb' }));
 app.use(express.static(path.join(process.cwd(), 'public')));
 // Serve the main HTML file
 app.get('/', (_req, res) => {
-    res.json({
-        message: 'ProductiveMiner API Server',
-        status: 'running',
-        version: '1.0.0',
-        environment: process.env['NODE_ENV'] || 'development',
-        testnet: process.env['TESTNET_MODE'] === 'true',
-        timestamp: new Date().toISOString(),
-        endpoints: {
-            health: '/api/health',
-            status: '/api/status',
-            blocks: '/api/blocks',
-            discoveries: '/api/discoveries',
-            validators: '/api/validators',
-            mining: '/api/mining/status',
-            balance: '/api/balance',
-            research: '/api/research-repository'
-        },
-        note: 'This is the backend API. For the frontend, deploy the frontend service separately.'
-    });
+    res.sendFile(path.join(process.cwd(), 'public/index.html'));
 });
 // Health check endpoint
 app.get('/api/health', (_req, res) => {
