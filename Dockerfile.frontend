@@ -1,0 +1,30 @@
+# Frontend Dockerfile for Railway
+FROM node:20-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy frontend package files
+COPY frontend/package*.json ./
+
+# Install dependencies
+RUN npm install
+
+# Copy frontend source code
+COPY frontend/ .
+
+# Set environment for production build
+ENV NODE_ENV=production
+ENV CI=false
+
+# Build the React app
+RUN npm run build
+
+# Install serve to run the built app
+RUN npm install -g serve
+
+# Expose port
+EXPOSE 3000
+
+# Start the application
+CMD ["serve", "-s", "build", "-l", "3000"] 
