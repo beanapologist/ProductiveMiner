@@ -13,11 +13,16 @@ export const RAILWAY_CONFIG = {
 
 // Helper function to get the correct backend URL
 export const getBackendUrl = () => {
-  if (RAILWAY_CONFIG.IS_RAILWAY || RAILWAY_CONFIG.IS_PRODUCTION) {
-    // In Railway or production, use the Railway backend URL
-    return RAILWAY_CONFIG.BACKEND_URL;
-  } else {
-    // Local development
+  // For local development, always use localhost:3000
+  if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
     return 'http://localhost:3000';
   }
+  
+  // For Railway or production, use the Railway backend URL
+  if (RAILWAY_CONFIG.IS_RAILWAY || RAILWAY_CONFIG.IS_PRODUCTION) {
+    return RAILWAY_CONFIG.BACKEND_URL;
+  }
+  
+  // Fallback to localhost for development
+  return 'http://localhost:3000';
 }; 
